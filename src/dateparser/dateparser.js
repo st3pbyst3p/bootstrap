@@ -530,10 +530,28 @@ angular.module('ui.bootstrap.dateparser', [])
     return date;
   }
 
+  // function to return the real server offset, based on the chosen date
+  function calcServerOffset(date, timezone) {
+
+    // converting the original ngModel date to Locale Date String, based on IANA timezone format
+    var options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short', timeZone: timezone };
+    var convertedDate = date.toLocaleDateString('en-GB', options);
+
+    // getting the offset
+    var splitted = convertedDate.split(',')[2].split(' ');
+    var offset = splitted[2].slice(3);
+
+    // transforming the offset into a suitable format
+    var serverOffset = -60*parseInt(offset);
+    return serverOffset;
+  }
+
   function convertTimezoneToLocal(date, timezone, reverse) {
     reverse = reverse ? -1 : 1;
     var dateTimezoneOffset = date.getTimezoneOffset();
-    var timezoneOffset = timezoneToOffset(timezone, dateTimezoneOffset);
+    var timezoneOffset;
+    if(timezone.includes('/')) { timezoneOffset = calcServerOffset(date, timezone); } 
+      else { timezoneOffset = timezoneToOffset(timezone, dateTimezoneOffset); }
     return addDateMinutes(date, reverse * (timezoneOffset - dateTimezoneOffset));
   }
 }]);
