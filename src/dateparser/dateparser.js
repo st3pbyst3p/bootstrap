@@ -535,7 +535,7 @@ angular.module('ui.bootstrap.dateparser', [])
 
     // converting the original ngModel date to Locale Date String, based on IANA timezone format
     var options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short', timeZone: timezone };
-    var convertedDate = date.toLocaleDateString('en-GB', options);
+    var convertedDate = date.toLocaleDateString('ru-RU', options);
 
     // getting the offset
     var splitted = convertedDate.split(',')[2].split(' ');
