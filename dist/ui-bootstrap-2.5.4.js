@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 2.5.4 - 2018-12-12
+ * Version: 2.5.4 - 2018-12-14
  * License: MIT
  */angular.module("ui.bootstrap", ["ui.bootstrap.collapse","ui.bootstrap.tabindex","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.isClass","ui.bootstrap.datepicker","ui.bootstrap.position","ui.bootstrap.datepickerPopup","ui.bootstrap.debounce","ui.bootstrap.multiMap","ui.bootstrap.dropdown","ui.bootstrap.stackedMap","ui.bootstrap.modal","ui.bootstrap.paging","ui.bootstrap.pager","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
 angular.module('ui.bootstrap.collapse', [])
@@ -1325,8 +1325,10 @@ angular.module('ui.bootstrap.dateparser', [])
     var convertedDate = date.toLocaleDateString('ru-RU', options);
 
     // getting the offset
-    var splitted = convertedDate.split(',')[2].split(' ');
-    var offset = splitted[2].slice(3);
+    var splitted = convertedDate.split(',');
+    if(splitted.length > 2) { splitted = splitted[2].split(' '); }
+    if(splitted.length > 2) { splitted = splitted[2].slice(3);   }
+    var offset = splitted;
 
     // transforming the offset into a suitable format
     var serverOffset = -60*parseInt(offset);
@@ -1337,7 +1339,7 @@ angular.module('ui.bootstrap.dateparser', [])
     reverse = reverse ? -1 : 1;
     var dateTimezoneOffset = date.getTimezoneOffset();
     var timezoneOffset;
-    if(timezone.includes('/')) { timezoneOffset = calcServerOffset(date, timezone); } 
+    if(timezone.includes('/')) { timezoneOffset = calcServerOffset(date, timezone) || dateTimezoneOffset; } 
       else { timezoneOffset = timezoneToOffset(timezone, dateTimezoneOffset); }
     return addDateMinutes(date, reverse * (timezoneOffset - dateTimezoneOffset));
   }
