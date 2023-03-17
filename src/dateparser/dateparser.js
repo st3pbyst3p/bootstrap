@@ -538,10 +538,14 @@ angular.module('ui.bootstrap.dateparser', [])
     var convertedDate = date.toLocaleDateString('ru-RU', options);
 
     // getting the offset
-    var splitted = convertedDate.split(',');
-    if(splitted.length > 2) { splitted = splitted[2].split(' '); }
-    if(splitted.length > 2) { splitted = splitted[2].slice(3);   }
-    var offset = splitted;
+    // var splitted = convertedDate.split(',');
+    // if(splitted.length > 2) { splitted = splitted[2].split(' '); }
+    // if(splitted.length > 2) { splitted = splitted[2].slice(3);   }
+    // var offset = splitted;
+
+    // getting the offset
+    var splitted = convertedDate.split('GMT');
+    var offset = splitted[1];
 
     // transforming the offset into a suitable format
     var serverOffset = -60*parseInt(offset);
