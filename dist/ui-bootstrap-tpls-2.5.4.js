@@ -1337,6 +1337,8 @@ angular.module('ui.bootstrap.dateparser', [])
 
     // transforming the offset into a suitable format
     var serverOffset = -60*parseInt(offset);
+
+    if(isNaN(serverOffset)) return 0;
     return serverOffset;
   }
 
