@@ -510,11 +510,23 @@ angular.module('ui.bootstrap.dateparser', [])
   this.convertTimezoneToLocal = convertTimezoneToLocal;
 
   function toTimezone(date, timezone) {
-    return date && timezone ? convertTimezoneToLocal(date, timezone) : date;
+    var dateObj = date;
+    const datePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+    if (datePattern.test(date)) {
+      dateObj = new Date(date);
+    }
+
+    return dateObj && timezone ? convertTimezoneToLocal(dateObj, timezone) : dateObj;
   }
 
   function fromTimezone(date, timezone) {
-    return date && timezone ? convertTimezoneToLocal(date, timezone, true) : date;
+    var dateObj = date;
+    const datePattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+    if (datePattern.test(date)) {
+      dateObj = new Date(date);
+    }
+
+    return dateObj && timezone ? convertTimezoneToLocal(dateObj, timezone, true) : dateObj;
   }
 
   //https://github.com/angular/angular.js/blob/622c42169699ec07fc6daaa19fe6d224e5d2f70e/src/Angular.js#L1207
