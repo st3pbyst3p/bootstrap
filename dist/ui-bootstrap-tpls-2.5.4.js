@@ -2,7 +2,7 @@
  * angular-ui-bootstrap
  * http://angular-ui.github.io/bootstrap/
 
- * Version: 2.5.4 - 2024-06-24
+ * Version: 2.5.4 - 2024-07-18
  * License: MIT
  */angular.module("ui.bootstrap", ["ui.bootstrap.tpls", "ui.bootstrap.collapse","ui.bootstrap.tabindex","ui.bootstrap.accordion","ui.bootstrap.alert","ui.bootstrap.buttons","ui.bootstrap.carousel","ui.bootstrap.dateparser","ui.bootstrap.isClass","ui.bootstrap.datepicker","ui.bootstrap.position","ui.bootstrap.datepickerPopup","ui.bootstrap.debounce","ui.bootstrap.multiMap","ui.bootstrap.dropdown","ui.bootstrap.stackedMap","ui.bootstrap.modal","ui.bootstrap.paging","ui.bootstrap.pager","ui.bootstrap.pagination","ui.bootstrap.tooltip","ui.bootstrap.popover","ui.bootstrap.progressbar","ui.bootstrap.rating","ui.bootstrap.tabs","ui.bootstrap.timepicker","ui.bootstrap.typeahead"]);
 angular.module("ui.bootstrap.tpls", ["uib/template/accordion/accordion-group.html","uib/template/accordion/accordion.html","uib/template/alert/alert.html","uib/template/carousel/carousel.html","uib/template/carousel/slide.html","uib/template/datepicker/datepicker.html","uib/template/datepicker/day.html","uib/template/datepicker/month.html","uib/template/datepicker/year.html","uib/template/datepickerPopup/popup.html","uib/template/modal/window.html","uib/template/pager/pager.html","uib/template/pagination/pagination.html","uib/template/tooltip/tooltip-html-popup.html","uib/template/tooltip/tooltip-popup.html","uib/template/tooltip/tooltip-template-popup.html","uib/template/popover/popover-html.html","uib/template/popover/popover-template.html","uib/template/popover/popover.html","uib/template/progressbar/bar.html","uib/template/progressbar/progress.html","uib/template/progressbar/progressbar.html","uib/template/rating/rating.html","uib/template/tabs/tab.html","uib/template/tabs/tabset.html","uib/template/timepicker/timepicker.html","uib/template/typeahead/typeahead-match.html","uib/template/typeahead/typeahead-popup.html"]);
@@ -3221,6 +3221,71 @@ function($scope, $element, $attrs, $compile, $log, $parse, $window, $document, $
         ctrl = ctrls[1];
 
       ctrl.init(ngModel);
+
+      // added logic ----------------------------------------
+      scope.$watch(function () {
+        return element.val();
+      }, function (newVal, oldVal) {
+          if(newVal) {
+            // init
+            testData(newVal);
+            function testData(data) {
+                const patterns = {
+                  1: /^\d$/,
+                  2: /^\d{2}$/,
+                  3: /^\d{2}\.$/,
+                  4: /^\d{2}\.\d$/,
+                  5: /^\d{2}\.\d{2}$/,
+                  6: /^\d{2}\.\d{2}\.$/,
+                  7: /^\d{2}\.\d{2}\.\d$/,
+                  8: /^\d{2}\.\d{2}\.\d{2}$/,
+                  9: /^\d{2}\.\d{2}\.\d{3}$/,
+                  10: /^\d{2}\.\d{2}\.\d{4}$/
+                };
+  
+                const pattern = patterns[data.length];
+                if (pattern && !pattern.test(data)) {
+                  // Remove the last character if it doesn't match the pattern
+                  element.val(data.slice(0, -1));
+                  if(element.val().length) {
+                    testData(element.val());
+                  }
+                }
+                else {
+                  element.val(data);
+                  afterSuccess();
+                }
+            }
+
+            function afterSuccess() {
+                // adding dot
+                if(element.val().length === 2 || element.val().length === 5) {
+                  element.val(element.val() + '.');
+                }
+
+                // Additional validation logic for day and month ranges
+                const parts = element.val().split('.');
+                if (parts.length > 0) {
+                    var day = parts[0];
+                    if (day.length === 2 && parseInt(day, 10) > 31) {
+                        parts[0] = '31';
+                    }
+                }
+
+                if (parts.length > 1) {
+                    var month = parts[1];
+                    if (month.length === 2 && parseInt(month, 10) > 12) {
+                        parts[1] = '12';
+                    }
+                }
+
+                // Update the input value
+                element.val(parts.join('.'));
+            }
+          }
+          
+      });
+      // end added logic ----------------------------------------
     }
   };
 })
